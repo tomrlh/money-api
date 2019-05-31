@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "categoria")
@@ -24,6 +26,8 @@ public class Categoria {
 		this.codigo = codigo;
 	}
 
+	@NotNull
+	@Size(min=3, max=20)
 	public String getNome() {
 		return nome;
 	}
