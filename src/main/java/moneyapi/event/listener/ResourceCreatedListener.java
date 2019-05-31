@@ -7,19 +7,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationListener;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import moneyapi.event.RecursoCriadoEvent;
+import moneyapi.event.ResourceCreatedEvent;
 
-public class RecursoCriadoListener implements ApplicationListener<RecursoCriadoEvent> {
+public class ResourceCreatedListener implements ApplicationListener<ResourceCreatedEvent> {
 
 	@Override
-	public void onApplicationEvent(RecursoCriadoEvent recursoCriadoEvent) {
+	public void onApplicationEvent(ResourceCreatedEvent recursoCriadoEvent) {
 		HttpServletResponse response = recursoCriadoEvent.getResponse();
-		Long codigo = recursoCriadoEvent.getCodigo();
+		Long id = recursoCriadoEvent.getId();
 		
 		URI uri = ServletUriComponentsBuilder
 				.fromCurrentRequestUri()
-				.path("/{codigo}")
-				.buildAndExpand(codigo)
+				.path("/{id}")
+				.buildAndExpand(id)
 				.toUri();
 		
 		response.setHeader("Location", uri.toASCIIString());

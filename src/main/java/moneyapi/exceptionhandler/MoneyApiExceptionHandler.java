@@ -29,10 +29,10 @@ public class MoneyApiExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request
 	) {
-		String msgUser = messageSource.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
-		String msgDev = ex.getCause().toString();
-		List<Erro> erros = Arrays.asList(new Erro(msgUser, msgDev));
-		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+		String userMessage = messageSource.getMessage("message.invalid", null, LocaleContextHolder.getLocale());
+		String developerMessage = ex.getCause().toString();
+		List<Erro> errors = Arrays.asList(new Erro(userMessage, developerMessage));
+		return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
 	}
 	
 	
@@ -42,8 +42,8 @@ public class MoneyApiExceptionHandler extends ResponseEntityExceptionHandler {
 			MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request
 	) {
-		List<Erro> erros = criarErrosList(ex.getBindingResult());
-		return super.handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+		List<Erro> errors = createErrorsList(ex.getBindingResult());
+		return super.handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
 	}
 	
 	
@@ -52,25 +52,25 @@ public class MoneyApiExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	
 	
-	private List<Erro> criarErrosList(BindingResult bindingResult) {
-		List<Erro> erros = new ArrayList<>();
+	private List<Erro> createErrorsList(BindingResult bindingResult) {
+		List<Erro> errors = new ArrayList<>();
 		
-		for(FieldError erro : bindingResult.getFieldErrors()) {
-			erros.add(new Erro(
-					messageSource.getMessage(erro, LocaleContextHolder.getLocale()),
-					erro.toString()
+		for(FieldError error : bindingResult.getFieldErrors()) {
+			errors.add(new Erro(
+					messageSource.getMessage(error, LocaleContextHolder.getLocale()),
+					error.toString()
 			));
 		}
-		return erros;
+		return errors;
 	}
 	
 	class Erro {
-		public String mensagemUsuario;  
-		public String mensagemDesenvolvedor;
+		public String userMessage;  
+		public String developerMessage;
 		
-		public Erro(String msgUser, String msgDev) {
-			this.mensagemUsuario = msgUser;
-			this.mensagemDesenvolvedor = msgDev;		
+		public Erro(String userMessage, String developerMessage) {
+			this.userMessage = userMessage;
+			this.developerMessage = developerMessage;		
 		}
 	}
 }

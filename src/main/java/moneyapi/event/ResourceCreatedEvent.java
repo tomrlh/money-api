@@ -4,25 +4,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.ApplicationEvent;
 
-public class RecursoCriadoEvent extends ApplicationEvent {
+public class ResourceCreatedEvent extends ApplicationEvent {
 
 	private static final long serialVersionUID = 1L;
 	
 	private HttpServletResponse response;
-	private Long codigo;
+	private Long id;
 	
-	public RecursoCriadoEvent(Object source, HttpServletResponse response, Long codigo) {
+	public ResourceCreatedEvent(Object source, HttpServletResponse response, Long id) {
 		super(source);
 		this.response = response;
-		this.codigo = codigo;
+		this.id = id;
 	}
 
 	public HttpServletResponse getResponse() {
 		return response;
 	}
 
-	public Long getCodigo() {
-		return codigo;
+	public Long getId() {
+		return id;
 	}
 
 	
