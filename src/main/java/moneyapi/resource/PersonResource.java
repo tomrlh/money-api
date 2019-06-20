@@ -6,12 +6,14 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +53,22 @@ public class PersonResource {
 		Person savedPerson = personRepository.save(person);
 		publisher.publishEvent(new ResourceCreatedEvent(this, response, savedPerson.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedPerson);
+	}
+	
+	
+	
+	@PatchMapping("/{id}")
+	public ResponseEntity<Person> update(@Valid @PathVariable Long id, @Valid @RequestBody Person person) {
+		Optional<Person> personToUpdate = personRepository.findById(id);
+		if(personToUpdate.isPresent()) {
+			//ResponseEntity.notFound().build();
+			BeanUtils.copyProperties(person, personToUpdate.get(), "id");
+			personRepository.save(personToUpdate.get());
+			return ResponseEntity.status(HttpStatus.CREATED).body(personToUpdate.get());
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	
