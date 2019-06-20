@@ -23,12 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 import moneyapi.event.ResourceCreatedEvent;
 import moneyapi.model.Person;
 import moneyapi.repository.PersonRepository;
+import moneyapi.service.PersonService;
 
 @RestController
 @RequestMapping("/person")
 public class PersonResource {
 	@Autowired
 	PersonRepository personRepository;
+	@Autowired
+	PersonService personService;
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
@@ -59,16 +62,8 @@ public class PersonResource {
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<Person> update(@Valid @PathVariable Long id, @Valid @RequestBody Person person) {
-		Optional<Person> personToUpdate = personRepository.findById(id);
-		if(personToUpdate.isPresent()) {
-			//ResponseEntity.notFound().build();
-			BeanUtils.copyProperties(person, personToUpdate.get(), "id");
-			personRepository.save(personToUpdate.get());
-			return ResponseEntity.status(HttpStatus.CREATED).body(personToUpdate.get());
-		}
-		else {
-			return ResponseEntity.notFound().build();
-		}
+		Person updatedPerson = personService.update(id, person);
+		return ResponseEntity.ok(updatedPerson);
 	}
 	
 	
