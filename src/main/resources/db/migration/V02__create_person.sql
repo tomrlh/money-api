@@ -3,10 +3,10 @@ CREATE TABLE person (
 	name VARCHAR(50) NOT NULL,
 	active BOOLEAN NOT NULL,
 	street VARCHAR(50),
-	number NUMBER,
+	number INTEGER,
 	complement VARCHAR(100),
 	district VARCHAR(50),
-	postal_code NUMBER,
+	postal_code INTEGER,
 	city VARCHAR(50),
 	state VARCHAR(30)	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
