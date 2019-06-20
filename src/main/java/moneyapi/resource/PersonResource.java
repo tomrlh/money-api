@@ -61,7 +61,7 @@ public class PersonResource {
 	
 	
 	@PatchMapping("/{id}")
-	public ResponseEntity<Person> update(@Valid @PathVariable Long id, @Valid @RequestBody Person person) {
+	public ResponseEntity<Person> update(@Valid @PathVariable Long id, @RequestBody Person person) {
 		Person updatedPerson = personService.update(id, person);
 		return ResponseEntity.ok(updatedPerson);
 	}

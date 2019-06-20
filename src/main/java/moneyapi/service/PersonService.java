@@ -1,6 +1,9 @@
 package moneyapi.service;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,20 @@ public class PersonService {
 	public Person update(Long id, Person person) {
 		Optional<Person> personToUpdate = personRepository.findById(id);
 		if(personToUpdate.isPresent()) {
-			BeanUtils.copyProperties(person, personToUpdate.get(), "id");
-			return personRepository.save(personToUpdate.get()); 
+			Person personFound = personToUpdate.get();
+			
+			Stream<Field> fields = Stream.of(personFound.getClass().getDeclaredFields());
+			
+			fields.forEach(field -> {
+				try {
+					field.setAccessible(true);
+					if(field.get(person) == null)
+						field.set(person, field.get(personFound));
+				} catch (IllegalArgumentException | IllegalAccessException e) {e.printStackTrace();}
+			});
+			
+			BeanUtils.copyProperties(person, personFound, "id");
+			return personFound;
 		}
 		else
 			throw new EmptyResultDataAccessException(1);
