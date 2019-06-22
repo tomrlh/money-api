@@ -1,5 +1,6 @@
 package moneyapi.repository.query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,7 +11,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import moneyapi.model.Entry;
+import moneyapi.model.Entry_;
 import moneyapi.repository.filter.EntryFilter;
 
 public class EntryRepositoryQueryImpl implements EntryRepositoryQuery {
@@ -34,8 +38,25 @@ public class EntryRepositoryQueryImpl implements EntryRepositoryQuery {
 	}
 
 
-	private Predicate[] createRestrictions(EntryFilter entryFilter, CriteriaBuilder builder, Root<Entry> root) {
-		// TODO Auto-generated method stub
-		return null;
+	private Predicate[] createRestrictions(EntryFilter lancamentoFilter, CriteriaBuilder builder,
+			Root<Entry> root) {
+		List<Predicate> predicates = new ArrayList<>();
+		
+		if (!StringUtils.isEmpty(lancamentoFilter.getDescription())) {
+			predicates.add(builder.like(
+					builder.lower(root.get(Entry_.DESCRIPTION)), "%" + lancamentoFilter.getDescription().toLowerCase() + "%"));
+		}
+		
+		if (lancamentoFilter.getDueDateSince() != null) {
+			predicates.add(
+					builder.greaterThanOrEqualTo(root.get(Entry_.DUE_DATE), lancamentoFilter.getDueDateSince()));
+		}
+		
+		if (lancamentoFilter.getDueDateUntil() != null) {
+			predicates.add(
+					builder.lessThanOrEqualTo(root.get(Entry_.DUE_DATE), lancamentoFilter.getDueDateUntil()));
+		}
+		
+		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 }

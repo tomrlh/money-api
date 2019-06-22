@@ -54,12 +54,14 @@
 		<dependency>
 		    <groupId>com.fasterxml.jackson.datatype</groupId>
 		    <artifactId>jackson-datatype-jsr310</artifactId>
-		    <version>2.9.9</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
-		    <version>3.9</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-jpamodelgen</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -69,7 +71,16 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+			    <artifactId>maven-compiler-plugin</artifactId>
+			    <configuration>
+			        <source>1.8</source>
+			        <target>1.8</target>
+			        <compilerArguments>
+			            <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+			        </compilerArguments>
+			    </configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>

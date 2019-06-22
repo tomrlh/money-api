@@ -23,11 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import moneyapi.event.ResourceCreatedEvent;
+import moneyapi.exceptionhandler.MoneyApiExceptionHandler.Error;
 import moneyapi.model.Entry;
 import moneyapi.repository.EntryRepository;
+import moneyapi.repository.filter.EntryFilter;
 import moneyapi.service.EntryService;
 import moneyapi.service.exception.PersonInactiveException;
-import moneyapi.exceptionhandler.MoneyApiExceptionHandler.Error;
 
 @RestController
 @RequestMapping("/entry")
@@ -42,10 +43,11 @@ public class EntryResource {
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
+	
+	
 	@GetMapping
-	public ResponseEntity<?> getAll() {
-		List<Entry> entries = entryRepository.findAll();
-		return !entries.isEmpty() ? ResponseEntity.ok(entries) : ResponseEntity.noContent().build();
+	public List<Entry> search(EntryFilter entryFilter) {
+		return entryRepository.filter(entryFilter);
 	}
 
 	
