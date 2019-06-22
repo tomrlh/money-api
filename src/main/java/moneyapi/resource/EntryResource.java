@@ -53,7 +53,7 @@ public class EntryResource {
 	@PostMapping
 	//@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Entry> create(@Valid @RequestBody Entry entry, HttpServletResponse response) {
-		entryService.formatEntry(entry);
+		entry = entryService.formatEntry(entry);
 		Entry savedEntry = entryRepository.save(entry);
 		publisher.publishEvent(new ResourceCreatedEvent(this, response, savedEntry.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedEntry);

@@ -33,11 +33,13 @@ public class EntryService {
 	
 	
 	
-	public void formatEntry(Entry entry) {
-		Person person = personService.findById(entry.getPerson().getId());
-		Category category = categoryService.findById(entry.getCategory().getId());
+	public Entry formatEntry(Entry entry) {
+		Person person = personService.findById(entry.getPersonId());
+		Category category = categoryService.findById(entry.getCategoryId());
 		
 		entry.setPerson(person);
 		entry.setCategory(category);
+		
+		return entry;
 	}
 }

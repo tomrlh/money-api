@@ -12,7 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 public class Entry {
@@ -42,6 +46,16 @@ public class Entry {
 	@ManyToOne
 	@JoinColumn(name="person_id")
 	private Person person;
+	
+	@NotNull // considered when validating a request
+	@Transient
+	@JsonProperty(access = Access.WRITE_ONLY) // removes the field from the response (Deserializable only - OBJ -> JSON)
+	private Long categoryId;
+	@NotNull
+	@Transient
+	@JsonProperty(access = Access.WRITE_ONLY) // removes the field from the response (Deserializable only - OBJ -> JSON)
+	private Long personId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -90,11 +104,28 @@ public class Entry {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	@JsonProperty(access = Access.READ_ONLY)
 	public Person getPerson() {
 		return person;
 	}
+	@JsonProperty(access = Access.WRITE_ONLY)
 	public void setPerson(Person person) {
 		this.person = person;
+	}
+	
+	
+	
+	public Long getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
+	public Long getPersonId() {
+		return personId;
+	}
+	public void setPersonId(Long personId) {
+		this.personId = personId;
 	}
 	
 	
