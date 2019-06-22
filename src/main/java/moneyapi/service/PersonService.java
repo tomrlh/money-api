@@ -46,9 +46,10 @@ public class PersonService {
 			});
 			
 			BeanUtils.copyProperties(person, personFound, "id");
-			return personFound;
+			return personRepository.save(personFound);
 		}
 		else
 			throw new EmptyResultDataAccessException(1);
 	}
+
 }

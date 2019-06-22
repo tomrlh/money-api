@@ -71,7 +71,7 @@ public class MoneyApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return errors;
 	}
 	
-	class Error {
+	public static class Error {
 		public String userMessage;  
 		public String developerMessage;
 		

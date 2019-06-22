@@ -47,7 +47,7 @@ public class Entry {
 	@JoinColumn(name="person_id")
 	private Person person;
 	
-	@NotNull // considered when validating a request
+	@NotNull
 	@Transient
 	@JsonProperty(access = Access.WRITE_ONLY) // removes the field from the response (Deserializable only - OBJ -> JSON)
 	private Long categoryId;

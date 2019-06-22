@@ -10,6 +10,7 @@ import moneyapi.model.Category;
 import moneyapi.model.Entry;
 import moneyapi.model.Person;
 import moneyapi.repository.EntryRepository;
+import moneyapi.service.exception.PersonInactiveException;
 
 @Service
 public class EntryService {
@@ -41,5 +42,17 @@ public class EntryService {
 		entry.setCategory(category);
 		
 		return entry;
+	}
+	
+	
+	
+	public Entry save(Entry entry) {
+		entry = this.formatEntry(entry);
+		
+		if(!entry.getPerson().getActive()) {
+			throw new PersonInactiveException();
+		}
+		return entryRepository.save(entry);
+		
 	}
 }

@@ -1,5 +1,6 @@
 package moneyapi.resource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,9 +9,12 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +26,15 @@ import moneyapi.event.ResourceCreatedEvent;
 import moneyapi.model.Entry;
 import moneyapi.repository.EntryRepository;
 import moneyapi.service.EntryService;
+import moneyapi.service.exception.PersonInactiveException;
+import moneyapi.exceptionhandler.MoneyApiExceptionHandler.Error;
 
 @RestController
 @RequestMapping("/entry")
 public class EntryResource {
 
+	@Autowired
+	private MessageSource messageSource;
 	@Autowired
 	private EntryRepository entryRepository;
 	@Autowired
@@ -54,7 +62,7 @@ public class EntryResource {
 	//@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Entry> create(@Valid @RequestBody Entry entry, HttpServletResponse response) {
 		entry = entryService.formatEntry(entry);
-		Entry savedEntry = entryRepository.save(entry);
+		Entry savedEntry = entryService.save(entry);
 		publisher.publishEvent(new ResourceCreatedEvent(this, response, savedEntry.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedEntry);
 	}
@@ -70,5 +78,15 @@ public class EntryResource {
 		}
 		else
 			return ResponseEntity.notFound().build();
+	}
+	
+	
+	
+	@ExceptionHandler({ PersonInactiveException.class })
+	public ResponseEntity<Object> handlePessoaInexistenteOuInativaException(PersonInactiveException ex) {
+		String usrMessage = messageSource.getMessage("person.inactive", null, LocaleContextHolder.getLocale());
+		String devMessage = ex.toString();
+		List<Error> erros = Arrays.asList(new Error(usrMessage, devMessage));
+		return ResponseEntity.badRequest().body(erros);
 	}
 }
