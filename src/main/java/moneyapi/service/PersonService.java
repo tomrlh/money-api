@@ -1,7 +1,6 @@
 package moneyapi.service;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -18,6 +17,16 @@ public class PersonService {
 
 	@Autowired
 	PersonRepository personRepository;
+	
+	
+	
+	public Person findById(Long id) {
+		Optional<Person> person = personRepository.findById(id);
+		if (!person.isPresent())
+			throw new EmptyResultDataAccessException(1);
+		
+		return person.get();
+	}
 	
 	
 	

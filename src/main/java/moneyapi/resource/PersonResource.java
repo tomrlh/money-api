@@ -45,8 +45,8 @@ public class PersonResource {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Person> find(@Valid @PathVariable Long id) {
-		Optional<Person> person = personRepository.findById(id);
-		return person.isPresent() ? ResponseEntity.ok(person.get()) : ResponseEntity.notFound().build();
+		Person person = personService.findById(id);
+		return ResponseEntity.ok(person);
 	}
 	
 	
