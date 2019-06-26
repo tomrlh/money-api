@@ -12,6 +12,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import moneyapi.model.Entry;
 import moneyapi.model.Entry_;
@@ -24,7 +27,7 @@ public class EntryRepositoryQueryImpl implements EntryRepositoryQuery {
 	
 
 	@Override
-	public List<Entry> filter(EntryFilter entryFilter) {
+	public Page<Entry> filter(EntryFilter entryFilter, Pageable pageable) {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Entry> criteria = builder.createQuery(Entry.class);
 		Root<Entry> root = criteria.from(Entry.class); // to add filters
@@ -33,30 +36,56 @@ public class EntryRepositoryQueryImpl implements EntryRepositoryQuery {
 		criteria.where(predicates);
 		
 		TypedQuery<Entry> query = em.createQuery(criteria);
+		addPaginationRules(query, pageable);
 		
-		return query.getResultList();
+		return new PageImpl<>(query.getResultList(), pageable, total(entryFilter));
 	}
 
 
-	private Predicate[] createRestrictions(EntryFilter lancamentoFilter, CriteriaBuilder builder,
+	private Predicate[] createRestrictions(EntryFilter entryFilter, CriteriaBuilder builder,
 			Root<Entry> root) {
 		List<Predicate> predicates = new ArrayList<>();
 		
-		if (!StringUtils.isEmpty(lancamentoFilter.getDescription())) {
+		if (!StringUtils.isEmpty(entryFilter.getDescription())) {
 			predicates.add(builder.like(
-					builder.lower(root.get(Entry_.DESCRIPTION)), "%" + lancamentoFilter.getDescription().toLowerCase() + "%"));
+					builder.lower(root.get(Entry_.DESCRIPTION)), "%" + entryFilter.getDescription().toLowerCase() + "%"));
 		}
 		
-		if (lancamentoFilter.getDueDateSince() != null) {
+		if (entryFilter.getDueDateSince() != null) {
 			predicates.add(
-					builder.greaterThanOrEqualTo(root.get(Entry_.DUE_DATE), lancamentoFilter.getDueDateSince()));
+					builder.greaterThanOrEqualTo(root.get(Entry_.DUE_DATE), entryFilter.getDueDateSince()));
 		}
 		
-		if (lancamentoFilter.getDueDateUntil() != null) {
+		if (entryFilter.getDueDateUntil() != null) {
 			predicates.add(
-					builder.lessThanOrEqualTo(root.get(Entry_.DUE_DATE), lancamentoFilter.getDueDateUntil()));
+					builder.lessThanOrEqualTo(root.get(Entry_.DUE_DATE), entryFilter.getDueDateUntil()));
 		}
 		
 		return predicates.toArray(new Predicate[predicates.size()]);
+	}
+	
+	
+	
+	private void addPaginationRules(TypedQuery<Entry> query, Pageable pageable) {
+		int paginaAtual = pageable.getPageNumber();
+		int totalRegistrosPorPagina = pageable.getPageSize();
+		int primeiroRegistroDaPagina = paginaAtual * totalRegistrosPorPagina;
+		
+		query.setFirstResult(primeiroRegistroDaPagina);
+		query.setMaxResults(totalRegistrosPorPagina);
+	}
+	
+	
+	
+	private Long total(EntryFilter entryFilter) {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+		Root<Entry> root = criteria.from(Entry.class);
+		
+		Predicate[] predicates = createRestrictions(entryFilter, builder, root);
+		criteria.where(predicates);
+		
+		criteria.select(builder.count(root));
+		return em.createQuery(criteria).getSingleResult();
 	}
 }

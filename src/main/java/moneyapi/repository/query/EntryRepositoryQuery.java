@@ -1,11 +1,12 @@
 package moneyapi.repository.query;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import moneyapi.model.Entry;
 import moneyapi.repository.filter.EntryFilter;
 
 public interface EntryRepositoryQuery {
 
-	public List<Entry> filter(EntryFilter entryFilter);
+	public Page<Entry> filter(EntryFilter entryFilter, Pageable pageable);
 }
