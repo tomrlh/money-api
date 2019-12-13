@@ -1,4 +1,4 @@
-package moneyapi.security;
+package moneyapi.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

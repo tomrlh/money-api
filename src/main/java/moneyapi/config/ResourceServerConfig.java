@@ -20,11 +20,13 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Autowired
-	UserDetailsService userDetailsService;
+	private UserDetailsService userDetailsService;
 	
 	@Autowired
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(bCryprtPasswordEncoder());
+		/*auth.inMemoryAuthentication()
+		.withUser("admin").password("admin").roles("ROLE");*/
+		auth.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder());
 	}
 	
 	
@@ -50,7 +52,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	
 	
 	@Bean
-	public PasswordEncoder bCryprtPasswordEncoder() {
-	    return new BCryptPasswordEncoder();
+	public PasswordEncoder bcryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
