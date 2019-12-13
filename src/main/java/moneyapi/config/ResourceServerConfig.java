@@ -19,14 +19,14 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-	@Autowired
-	private UserDetailsService userDetailsService;
+//	@Autowired
+//	private UserDetailsService userDetailsService;
 	
 	@Autowired
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		/*auth.inMemoryAuthentication()
-		.withUser("admin").password("admin").roles("ROLE");*/
-		auth.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder());
+		auth.inMemoryAuthentication()
+		.withUser("admin").password("admin").roles("ROLE");
+//		auth.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder());
 	}
 	
 	
@@ -38,13 +38,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		
 		http.authorizeRequests()
 			.antMatchers("/h2-console*").permitAll()
-			.antMatchers("/category").permitAll();
-		
-//		.anyRequest().authenticated()
-//	.and()
-//		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//	.and()
-//		.csrf().disable()
+			.antMatchers("/category").permitAll()
+			.anyRequest().authenticated()
+		.and()
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and()
+			.csrf().disable();
 	}
 	
 	
@@ -56,8 +55,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	
 	
 	
-	@Bean
-	public PasswordEncoder bcryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+//	@Bean
+//	public PasswordEncoder bcryptPasswordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
 }
