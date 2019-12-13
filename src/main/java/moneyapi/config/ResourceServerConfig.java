@@ -33,13 +33,18 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
+		// line to make h2-console not be blank
+		http.headers().frameOptions().sameOrigin();
+		
 		http.authorizeRequests()
-			.antMatchers("/category").permitAll()
-			.anyRequest().authenticated()
-		.and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and()
-			.csrf().disable();
+			.antMatchers("/h2-console*").permitAll()
+			.antMatchers("/category").permitAll();
+		
+//		.anyRequest().authenticated()
+//	.and()
+//		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//	.and()
+//		.csrf().disable()
 	}
 	
 	
