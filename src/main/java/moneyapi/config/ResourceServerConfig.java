@@ -3,7 +3,9 @@ package moneyapi.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,10 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
 
 @Configuration
 @EnableWebSecurity
 @EnableResourceServer
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 //	@Autowired
@@ -29,16 +33,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 //		auth.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder());
 	}
 	
-	
-	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		// line to make h2-console not be blank
 		http.headers().frameOptions().sameOrigin();
 		
 		http.authorizeRequests()
-			.antMatchers("/h2-console*").permitAll()
+			.antMatchers("/h2-console/*").permitAll()
 			.antMatchers("/category").permitAll()
+			.antMatchers("/status").permitAll()
 			.anyRequest().authenticated()
 		.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -46,17 +49,18 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 			.csrf().disable();
 	}
 	
-	
-	
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 		resources.stateless(true);
 	}
-	
-	
-	
-//	@Bean
-//	public PasswordEncoder bcryptPasswordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
+
+	@Bean
+	public PasswordEncoder bcryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public MethodSecurityExpressionHandler createExpressionHandler() {
+		return new OAuth2MethodSecurityExpressionHandler();
+	}
 }

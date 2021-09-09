@@ -21,8 +21,8 @@ CREATE TABLE user_permission (
 INSERT INTO user (id, name, email, password) values (1, 'Administrador', 'admin@moneyapi.com', '$2a$10$X607ZPhQ4EgGNaYKt3n4SONjIv9zc.VMWdEuhCuba7oLAL5IvcL5.');
 INSERT INTO user (id, name, email, password) values (2, 'Maria Silva', 'maria@moneyapi.com', '$2a$10$Zc3w6HyuPOPXamaMhh.PQOXvDnEsadztbfi6/RyZWJDzimE8WQjaq');
 
-INSERT INTO permission (id, description) values (1, 'ROLE_REGISTER_PERSON');
-INSERT INTO permission (id, description) values (2, 'ROLE_SEARCH_PERSON');
+INSERT INTO permission (id, description) values (1, 'ROLE_REGISTER_CATEGORY');
+INSERT INTO permission (id, description) values (2, 'ROLE_SEARCH_CATEGORY');
 
 INSERT INTO permission (id, description) values (3, 'ROLE_REGISTER_PERSON');
 INSERT INTO permission (id, description) values (4, 'ROLE_REMOVE_PERSON');

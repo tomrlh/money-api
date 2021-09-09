@@ -27,6 +27,7 @@ import moneyapi.service.PersonService;
 @RestController
 @RequestMapping("/person")
 public class PersonResource {
+
 	@Autowired
 	PersonRepository personRepository;
 	@Autowired
@@ -40,15 +41,11 @@ public class PersonResource {
 		return !people.isEmpty() ? ResponseEntity.ok(people) : ResponseEntity.noContent().build();
 	}
 	
-	
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<Person> find(@Valid @PathVariable Long id) {
 		Person person = personService.findById(id);
 		return ResponseEntity.ok(person);
 	}
-	
-	
 	
 	@PostMapping
 	public ResponseEntity<Person> create(@Valid @RequestBody Person person, HttpServletResponse response) {
@@ -57,15 +54,11 @@ public class PersonResource {
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedPerson);
 	}
 	
-	
-	
 	@PatchMapping("/{id}")
 	public ResponseEntity<Person> update(@Valid @PathVariable Long id, @RequestBody Person person) {
 		Person updatedPerson = personService.update(id, person);
 		return ResponseEntity.ok(updatedPerson);
 	}
-	
-	
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> remover(@Valid @PathVariable Long id) {

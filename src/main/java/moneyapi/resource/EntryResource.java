@@ -45,23 +45,17 @@ public class EntryResource {
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
-	
-	
 	@GetMapping
 	public Page<Entry> search(EntryFilter entryFilter, Pageable pageable) {
 		return entryRepository.filter(entryFilter, pageable);
 	}
 
-	
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<Entry> find(@PathVariable Long id) {
 		Optional<Entry> entry = entryRepository.findById(id);
 		return entry.isPresent() ? ResponseEntity.ok(entry.get()) : ResponseEntity.notFound().build();
 	}
 
-	
-	
 	@PostMapping
 	//@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Entry> create(@Valid @RequestBody Entry entry, HttpServletResponse response) {
@@ -70,8 +64,6 @@ public class EntryResource {
 		publisher.publishEvent(new ResourceCreatedEvent(this, response, savedEntry.getId()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedEntry);
 	}
-	
-	
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@Valid @PathVariable Long id) {
@@ -83,8 +75,6 @@ public class EntryResource {
 		else
 			return ResponseEntity.notFound().build();
 	}
-	
-	
 	
 	@ExceptionHandler({ PersonInactiveException.class })
 	public ResponseEntity<Object> handlePessoaInexistenteOuInativaException(PersonInactiveException ex) {
