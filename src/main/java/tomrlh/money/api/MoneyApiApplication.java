@@ -1,4 +1,4 @@
-package tomrlh.money.api.moneyapi;
+package tomrlh.money.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
