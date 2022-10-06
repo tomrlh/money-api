@@ -2,6 +2,7 @@ package tomrlh.money.api.controllers;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import io.micrometer.core.ipc.http.HttpSender.Response;
 import tomrlh.money.api.model.Category;
 import tomrlh.money.api.repository.CategoryRepository;
 
@@ -33,8 +35,13 @@ public class CategoryResource {
     }
 
     @GetMapping("/{id}")
-    public Category find(@PathVariable Long id) {
-        return categoryRepository.findById(id).get();
+    public ResponseEntity<Category> find(@PathVariable Long id) {
+        Optional<Category> categoryFound = categoryRepository.findById(id);
+        if(!categoryFound.isEmpty()) {
+            return ResponseEntity.ok(categoryFound.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
