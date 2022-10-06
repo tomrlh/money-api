@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class CategoryResource {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Category> store(@RequestBody Category category, HttpServletResponse response) {
+    public ResponseEntity<Category> store(@Valid @RequestBody Category category, HttpServletResponse response) {
         Category savedCategory = categoryRepository.save(category);
 
         // adds to response header the Location URI of created resource
